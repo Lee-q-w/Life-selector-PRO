@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 · 选择搭子</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: linear-gradient(145deg, #1e2f4b, #0f1a2c);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-box {
+            background: white;
+            max-width: 450px;
+            width: 100%;
+            padding: 40px;
+            border-radius: 40px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        }
+        h1 {
+            font-size: 42px;
+            color: #1e2f4b;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        .subtitle {
+            color: #6f7d95;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        /* 选项卡 */
+        .tab-switch {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            background: #f0f4fa;
+            padding: 5px;
+            border-radius: 50px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            background: transparent;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .tab-btn.active {
+            background: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            color: #1e3c5f;
+        }
+        
+        /* 表单 */
+        .form-section {
+            transition: 0.3s;
+        }
+        .form-section.hidden {
+            display: none;
+        }
+        
+        input {
+            width: 100%;
+            padding: 15px 18px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e7f0;
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.2s;
+        }
+        input:focus {
+            border-color: #1e3c5f;
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.1s;
+            margin-bottom: 15px;
+        }
+        
+        .submit-btn {
+            background: #1e3c5f;
+            color: white;
+            box-shadow: 0 6px 0 #0f2640;
+        }
+        .submit-btn:active {
+            transform: translateY(6px);
+            box-shadow: none;
+        }
+        
+        .register-btn {
+            background: #f0f4fa;
+            color: #1e2f4b;
+            box-shadow: 0 6px 0 #a0b3cc;
+        }
+        .register-btn:active {
+            transform: translateY(6px);
+            box-shadow: none;
+        }
+        
+        /* 消息提示 */
+        .message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 30px;
+            text-align: center;
+            font-size: 14px;
+            display: none;
+        }
+        .message.show {
+            display: block;
+        }
+        .message.success {
+            background: #e3f7e3;
+            color: #1e7a1e;
+        }
+        .message.error {
+            background: #ffe5e5;
+            color: #c00;
+        }
+        
+        /* 隐藏类 */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>🤝 选择搭子</h1>
+        <p class="subtitle">你做什么选择，就遇到什么样的人</p>
+
+        <!-- 选项卡 -->
+        <div class="tab-switch">
+            <button class="tab-btn active" id="login-tab">登录</button>
+            <button class="tab-btn" id="register-tab">注册</button>
+        </div>
+
+        <!-- 登录表单 -->
+        <div class="form-section" id="login-form">
+            <input type="tel" id="login-phone" placeholder="手机号" value="13800138000">
+            <input type="password" id="login-password" placeholder="密码" value="123456">
+            <button class="submit-btn" id="login-btn">登 录</button>
+        </div>
+
+        <!-- 注册表单（默认隐藏） -->
+        <div class="form-section hidden" id="register-form">
+            <input type="tel" id="register-phone" placeholder="手机号" value="13800138000">
+            <input type="text" id="register-nickname" placeholder="昵称" value="新用户">
+            <input type="password" id="register-password" placeholder="密码" value="123456">
+            <input type="password" id="register-confirm" placeholder="确认密码" value="123456">
+            <button class="register-btn" id="register-btn">注 册</button>
+        </div>
+
+        <!-- 消息提示 -->
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        // ========== 获取元素 ==========
+        // 选项卡
+        const loginTab = document.getElementById('login-tab');
+        const registerTab = document.getElementById('register-tab');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        
+        // 登录相关
+        const loginPhone = document.getElementById('login-phone');
+        const loginPassword = document.getElementById('login-password');
+        const loginBtn = document.getElementById('login-btn');
+        
+        // 注册相关
+        const registerPhone = document.getElementById('register-phone');
+        const registerNickname = document.getElementById('register-nickname');
+        const registerPassword = document.getElementById('register-password');
+        const registerConfirm = document.getElementById('register-confirm');
+        const registerBtn = document.getElementById('register-btn');
+        
+        // 消息提示
+        const messageDiv = document.getElementById('message');
+        
+        // ========== 后端地址 ==========
+        const API_BASE_URL = 'http://localhost:3000';
+        
+        // ========== 显示消息 ==========
+        function showMessage(text, type = 'error') {
+            messageDiv.textContent = text;
+            messageDiv.className = `message show ${type}`;
+            setTimeout(() => messageDiv.classList.remove('show'), 3000);
+        }
+        
+        // ========== 切换登录/注册 ==========
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('active');
+            registerTab.classList.remove('active');
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+        });
+        
+        registerTab.addEventListener('click', () => {
+            registerTab.classList.add('active');
+            loginTab.classList.remove('active');
+            registerForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+        });
+        
+        // ========== 登录 ==========
+        loginBtn.addEventListener('click', async () => {
+            const phone = loginPhone.value.trim();
+            const password = loginPassword.value.trim();
+            
+            if (!phone || !password) {
+                showMessage('请填写手机号和密码');
+                return;
+            }
+            
+            showMessage('登录中...', 'success');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone, password })
+                });
+                
+                const result = await response.json();
+                console.log('登录返回:', result);
+                
+                if (result.code === 200) {
+                    const userData = result.data;
+                    
+                    localStorage.setItem('token', userData.token);
+                    localStorage.setItem('user', JSON.stringify({
+                        id: userData.id,
+                        nickname: userData.nickname,
+                        avatar: userData.avatar
+                    }));
+                    
+                    showMessage('登录成功，跳转中...', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                } else {
+                    showMessage(result.message || '登录失败');
+                }
+            } catch (error) {
+                console.error('登录错误:', error);
+                showMessage('网络错误，请确认后端是否启动');
+            }
+        });
+        
+        // ========== 注册 ==========
+        registerBtn.addEventListener('click', async () => {
+            const phone = registerPhone.value.trim();
+            const nickname = registerNickname.value.trim();
+            const password = registerPassword.value.trim();
+            const confirm = registerConfirm.value.trim();
+            
+            if (!phone || !nickname || !password || !confirm) {
+                showMessage('请填写所有字段');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('密码至少6位');
+                return;
+            }
+            
+            if (password !== confirm) {
+                showMessage('两次密码不一致');
+                return;
+            }
+            
+            showMessage('注册中...', 'success');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone, nickname, password })
+                });
+                
+                const result = await response.json();
+                console.log('注册返回:', result);
+                
+                if (result.code === 200) {
+                    const userData = result.data;
+                    
+                    localStorage.setItem('token', userData.token);
+                    localStorage.setItem('user', JSON.stringify({
+                        id: userData.id,
+                        nickname: userData.nickname,
+                        avatar: userData.avatar
+                    }));
+                    
+                    showMessage('注册成功，跳转中...', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                } else {
+                    showMessage(result.message || '注册失败');
+                }
+            } catch (error) {
+                console.error('注册错误:', error);
+                showMessage('网络错误，请确认后端是否启动');
+            }
+        });
+        
+        // ========== 检查是否已登录 ==========
+        if (localStorage.getItem('token')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

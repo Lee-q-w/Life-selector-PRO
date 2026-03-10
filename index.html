@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life selector · 选择搭子</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+       
+        <div class="header">
+            <div class="header-left">
+                <h1>🤝 选择搭子</h1>
+                <p class="subtitle">你做什么选择，就遇到什么样的人</p >
+            </div>
+            
+            <div class="header-right">
+                <!-- 消息图标 -->
+                <button class="message-icon" id="message-btn">
+                    💬
+                    <span class="badge hidden" id="message-badge">3</span>
+                </button>
+                
+                <!-- 板块切换标签 -->
+                <div class="tab-bar">
+                    <button class="tab-btn-section active" id="tab-test">📊 选择测试</button>
+                    <button class="tab-btn-section" id="tab-mate">🎯 搭子匹配</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 双栏布局 -->
+        <div class="dashboard">
+            <!-- 左侧主内容区 -->
+            <div class="main-content">
+                <!-- 板块1：选择测试 -->
+                <div id="section-test">
+                    <!-- 当前问题卡片 -->
+                    <div class="question-card">
+                        <div class="question-emoji" id="current-emoji">❓</div>
+                        <h2 id="current-question">今晚吃什么？</h2>
+                        
+                        <div class="choices">
+                            <button class="choice-btn left-btn" id="choice-left">
+                                <span class="choice-emoji" id="left-emoji">🍜</span>
+                                <span class="choice-text" id="left-text">吃面</span>
+                            </button>
+                            <button class="choice-btn right-btn" id="choice-right">
+                                <span class="choice-emoji" id="right-emoji">🍚</span>
+                                <span class="choice-text" id="right-text">吃饭</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 匹配结果卡片 -->
+                    <div class="match-card hidden" id="match-card">
+                        <div class="match-header">
+                            <span class="match-emoji" id="match-emoji">🍜</span>
+                            <h3>也有 <span id="match-count">3</span> 个人选了<span id="match-choice">吃面</span></h3>
+                        </div>
+                        <div class="mates-list" id="mates-list"></div>
+                        <div class="match-actions">
+                            <button class="next-btn" id="next-question">继续选择 ➡️</button>
+                        </div>
+                    </div>
+
+                    <!-- 底部操作 -->
+                    <div class="footer-actions">
+                        <button class="action-btn" id="reset-all">🔄 重置所有</button>
+                    </div>
+                </div>
+
+                <!-- 板块2：搭子匹配（默认隐藏） -->
+                <div id="section-mate" class="hidden">
+                    <h2 style="margin-bottom: 25px;">🎯 附近的人 · 也在找搭子</h2>
+                    <div class="mate-list-new" id="nearby-list"></div>
+                </div>
+            </div>
+
+            <!-- 右侧侧边栏（我的搭子记录） -->
+            <div class="sidebar">
+                <div class="my-mates">
+                    <h3>📋 我的搭子记录</h3>
+                    <div id="my-mates-list" class="my-mates-list">
+                        <p class="empty-mates">还没有搭子，戳一个试试？</p >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<!-- ========== 消息弹窗 ========== -->
+	<div class="modal hidden" id="message-modal">
+	    <div class="modal-content message-modal">
+	        <div class="modal-header">
+	            <h3>💬 消息</h3>
+	            <button class="close-btn" id="close-message">✕</button>
+	        </div>
+	        <div class="conversation-list" id="conversation-list">
+	            <!-- 加载中 -->
+	            <div class="loading">加载中...</div>
+	        </div>
+	    </div>
+	</div>
+	
+	<!-- ========== 聊天窗口 ========== -->
+	<div class="modal hidden" id="chat-modal">
+	    <div class="modal-content chat-modal">
+	        <div class="chat-header">
+	            <button class="back-btn" id="back-to-list">←</button>
+	            <div class="chat-user-info">
+	                <span class="chat-avatar" id="chat-avatar">😎</span>
+	                <span class="chat-username" id="chat-username">小王</span>
+	            </div>
+	        </div>
+	        
+	        <div class="chat-messages" id="chat-messages">
+	            <!-- 消息会动态添加到这里 -->
+	        </div>
+	        
+	        <div class="chat-input-area">
+	            <input type="text" id="chat-input" placeholder="输入消息...">
+	            <button id="send-message">发送</button>
+	        </div>
+	    </div>
+	</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
