@@ -21,7 +21,7 @@ const registerForm = document.getElementById('register-form');
 const messageBox = document.getElementById('message-box');
 
 // ========== 后端地址 ==========
-const API_BASE_URL = 'http://localhost:3000';  // 如果你的端口改了，比如3001，就改成3001
+const API_BASE_URL = 'https://life-selector-pro-production.up.railway.app';  // 如果你的端口改了，比如3001，就改成3001
 
 // ========== 显示消息 ==========
 function showMessage(text, type = 'error') {

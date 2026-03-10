@@ -6,7 +6,7 @@ let currentChatUser = null;
 let ws = null; // WebSocket连接
 
 // ========== 后端地址 ==========
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'https://life-selector-pro-production.up.railway.app';
 
 // ========== 模拟数据（仅定义一次，避免重复） ==========
 // 基础用户数据
