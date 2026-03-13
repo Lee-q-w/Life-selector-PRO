@@ -467,50 +467,56 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // ========== 6. WebSocket连接 ==========
     // 连接WebSocket
-    function connectWebSocket() {
-        if (!currentUser) return;
-        
-        const userId = currentUser.id;
+function connectWebSocket() {
+    if (!currentUser) return;
+    
+    const userId = currentUser.id;
+    
+    // 判断是本地还是线上
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        // 本地开发用 ws
         ws = new WebSocket(`ws://localhost:3000?userId=${userId}`);
-        
-        ws.onopen = () => {
-            console.log('WebSocket连接成功');
-        };
-        
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log('收到消息:', data);
-            
-            if (data.type === 'new_message') {
-                // 收到新消息
-                
-                // 浏览器通知
-                if ('Notification' in window && Notification.permission === 'granted') {
-                    new Notification('新消息', {
-                        body: data.content,
-                    });
-                }
-                
-                // 如果正在和这个人聊天，直接刷新聊天记录
-                if (currentChatUser && currentChatUser.id === data.fromUserId) {
-                    renderChatMessages(data.fromUserId);
-                } else {
-                    // 更新未读红点
-                    updateUnreadBadge();
-                }
-            } else if (data.type === 'online_users') {
-                console.log('在线用户:', data.users);
-                // 可以在这里高亮显示在线的人
-            }
-        };
-        
-        ws.onclose = () => {
-            console.log('WebSocket断开，5秒后重连');
-            setTimeout(connectWebSocket, 5000);
-        };
+    } else {
+        // 线上用 wss（你的 Railway 域名）
+        ws = new WebSocket(`wss://life-selector-pro-production.up.railway.app?userId=${userId}`);
     }
+    
+    ws.onopen = () => {
+        console.log('WebSocket连接成功');
+    };
+    
+    ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log('收到消息:', data);
+        
+        if (data.type === 'new_message') {
+            // 收到新消息
+            
+            // 浏览器通知
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('新消息', {
+                    body: data.content,
+                });
+            }
+            
+            // 如果正在和这个人聊天，直接刷新聊天记录
+            if (currentChatUser && currentChatUser.id === data.fromUserId) {
+                renderChatMessages(data.fromUserId);
+            } else {
+                // 更新未读红点
+                updateUnreadBadge();
+            }
+        } else if (data.type === 'online_users') {
+            console.log('在线用户:', data.users);
+        }
+    };
+    
+    ws.onclose = () => {
+        console.log('WebSocket断开，5秒后重连');
+        setTimeout(connectWebSocket, 5000);
+    };
+}
 
     // 发送消息时，通过WebSocket发
     function sendMessageViaWebSocket(toUserId, content) {
