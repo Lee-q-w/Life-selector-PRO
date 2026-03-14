@@ -1,3 +1,7 @@
+console.log('🔍 启动调试:');
+console.log('RENDER=', process.env.RENDER);
+console.log('PORT=', process.env.PORT);
+console.log('所有环境变量:', process.env);
 // server.js - 你的第一个后端！
 const express = require('express');
 const cors = require('cors');
