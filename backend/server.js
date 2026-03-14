@@ -1,7 +1,6 @@
 console.log('🔍 启动调试:');
-console.log('RENDER=', process.env.RENDER);
+console.log('RAILWAY_ENVIRONMENT=', process.env.RAILWAY_ENVIRONMENT);
 console.log('PORT=', process.env.PORT);
-console.log('所有环境变量:', process.env);
 // server.js - 你的第一个后端！
 const express = require('express');
 const cors = require('cors');
@@ -10,7 +9,7 @@ const path = require('path'); // 新增：处理路径
 const WebSocket = require('ws');
 
 const app = express();
-// 重要：使用环境变量 PORT，Render会自动分配
+// 重要：使用环境变量 PORT，Railway会自动分配
 const PORT = process.env.PORT || 3000;
 
 // 让前端能访问
@@ -19,8 +18,9 @@ app.use(cors());
 app.use(express.json());
 
 // ========== 用文件当数据库（使用绝对路径） ==========
-// 在Render上，数据会存在 /tmp 目录下（重启后丢失）
-const DATA_DIR = process.env.RENDER ? '/tmp' : '.';
+// 在Railway上，数据会存在 /tmp 目录下（重启后丢失）
+const isRailway = !!process.env.RAILWAY_ENVIRONMENT;
+const DATA_DIR = isRailway ? '/tmp' : '.';
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const MESSAGES_FILE = path.join(DATA_DIR, 'messages.json');
 const CONVERSATIONS_FILE = path.join(DATA_DIR, 'conversations.json');
@@ -337,7 +337,7 @@ app.post('/api/messages/read', (req, res) => {
 const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ 后端跑起来了！`);
     console.log(`📌 端口: ${PORT}`);
-    console.log(`📌 环境: ${process.env.RENDER ? 'Render' : '本地'}`);
+    console.log(`📌 环境: ${isRailway ? 'Railway' : '本地'}`);
     console.log(`📌 数据目录: ${DATA_DIR}`);
 });
 
@@ -417,7 +417,7 @@ function formatTime(isoString) {
     return date.toLocaleDateString();
 }
 
-// 健康检查接口（防止Render休眠）
+// 健康检查接口（防止Railway休眠）
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', time: new Date().toISOString() });
 });
