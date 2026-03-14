@@ -6,7 +6,7 @@ let currentChatUser = null;
 let ws = null; // WebSocket连接
 
 // ========== 后端地址 ==========
-const API_BASE_URL = 'https://life-selector-pro-production.up.railway.app';
+const API_BASE_URL = 'https://life-selector-pro-production-b35d.up.railway.app';
 
 // ========== 模拟数据（仅定义一次，避免重复） ==========
 // 基础用户数据
@@ -478,8 +478,8 @@ function connectWebSocket() {
         // 本地开发用 ws
         ws = new WebSocket(`ws://localhost:3000?userId=${userId}`);
     } else {
-        // 线上用 wss（你的 Railway 域名）
-        ws = new WebSocket(`wss://life-selector-pro-production.up.railway.app?userId=${userId}`);
+        // 线上用 wss（你的后端域名）
+        ws = new WebSocket(`wss://life-selector-pro-production-b35d.up.railway.app?userId=${userId}`);
     }
     
     ws.onopen = () => {
